@@ -11,7 +11,7 @@ RUN chmod +x /usr/local/bin/nginx_start.sh
 
 #------------------------------------------------
 
-#copy the configuration file and use the one that we made
+# copy the configuration file and use the one that we made
 COPY conf/nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 443
