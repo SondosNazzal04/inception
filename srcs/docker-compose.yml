@@ -1,0 +1,73 @@
+version: '3.8'
+
+# 1. THE EMPLOYEES (Containers)
+services:
+
+  # The Vault
+  mariadb:
+    build: ./requirements/mariadb
+    container_name: mariadb
+    restart: on-failure
+    env_file: .env
+    secrets:
+      - db_password
+      - db_root_password
+    networks:
+      - inception
+    volumes:
+      - db_data:/var/lib/mysql
+
+  # The Brains / Middle Manager
+  wordpress:
+    build: ./requirements/wordpress
+    container_name: wordpress
+    restart: always
+    env_file: .env
+    depends_on:
+      - mariadb
+    networks:
+      - inception
+    volumes:
+      - wp_data:/var/www/wordpress
+    secrets:
+      - db_password
+
+  # The Receptionist
+  nginx:
+    build: ./requirements/nginx
+    container_name: nginx
+    restart: always
+    depends_on:
+      - wordpress
+    ports:
+      - "443:443"
+    networks:
+      - inception
+    volumes:
+      - wp_data:/var/www/wordpress
+
+secrets:
+  db_password:
+    file: ../secrets/db_password.txt
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+
+# 2. THE INTERCOM (Internal Network)
+networks:
+  inception:
+    driver: bridge
+
+# 3. THE FILING CABINETS (Persistent Storage)
+volumes:
+  db_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/snazzal/data/mariadb
+  wp_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/snazzal/data/wordpress

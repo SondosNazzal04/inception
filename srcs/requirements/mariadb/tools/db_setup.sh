@@ -1,35 +1,36 @@
 #!/bin/bash
-set -e # Exit immediately if a command exits with a non-zero status.
 
-# Initialize the data directory if it's empty (first run)
+set -e
+
+DB_PASS=$(cat /run/secrets/db_password)
+DB_ROOT_PASS=$(cat /run/secrets/db_root_password)
+
 if [ ! -d "/var/lib/mysql/mysql" ]; then
-    echo "Initializing MariaDB database..."
-    # Initialize the database structure
+    echo "No existing database found, initializing..."
+
     mysql_install_db --user=mysql --datadir=/var/lib/mysql > /dev/null
 
-    # Start the server temporarily to configure it
-    mysqld_safe --user=mysql &
-    # Wait for the server to be ready
-    until mysqladmin ping >/dev/null 2>&1; do
+    # Start MariaDB temporarily without networking
+    mysqld_safe --datadir=/var/lib/mysql --skip-networking &
+
+    # Wait until MariaDB is ready
+    until mysqladmin ping --silent; do
         sleep 1
     done
 
-    echo "Configuring database users..."
-    
-    # Secure the installation and set up WordPress users
-    # Read secrets from environment variables (passed by docker-compose)
-    mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASSWORD}';"
-    mysql -e "CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`;"
-    mysql -e "CREATE USER IF NOT EXISTS '${DB_USER}'@'%' IDENTIFIED BY '${DB_PASSWORD}';"
-    mysql -e "GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'%';"
-    mysql -e "FLUSH PRIVILEGES;"
+    mysql -u root <<EOF
+CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`;
+CREATE USER IF NOT EXISTS '${DB_USER}'@'%' IDENTIFIED BY '${DB_PASS}';
+GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'%';
+ALTER USER 'root'@'localhost' IDENTIFIED BY '${DB_ROOT_PASS}';
+FLUSH PRIVILEGES;
+EOF
 
-    echo "Shutting down temporary server..."
-    # Gracefully shut down the temporary server
-    mysqladmin -u root -p"${DB_ROOT_PASSWORD}" shutdown
-    
-    echo "Database setup completed successfully."
+    # Shut down temporary server
+    mysqladmin -u root -p"${DB_ROOT_PASS}" shutdown
+else
+    echo "Existing database found, skipping initialization."
 fi
 
-# Execute the main command (mariadbd)
-exec "$@"
+# Start MariaDB in the foreground
+exec mysqld_safe --datadir=/var/lib/mysql
