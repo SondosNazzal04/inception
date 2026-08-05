@@ -6,8 +6,10 @@ mkdir -p /run/php
 
 cd /var/www/wordpress
 
-# Read DB_PASSWORD from docker secret
+# Read passwords from docker secrets
 DB_PASSWORD=$(cat /run/secrets/db_password)
+WP_ADMIN_PASSWORD=$(cat /run/secrets/wp_admin_password)
+WP_USER_PASSWORD=$(cat /run/secrets/wp_user_password)
 
 # 1. WAIT FOR MARIADB TO BE READY
 echo "Waiting for MariaDB to start..."

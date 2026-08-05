@@ -31,6 +31,8 @@ services:
       - wp_data:/var/www/wordpress
     secrets:
       - db_password
+      - wp_admin_password
+      - wp_user_password
 
   # The Receptionist
   nginx:
@@ -51,6 +53,10 @@ secrets:
     file: ../secrets/db_password.txt
   db_root_password:
     file: ../secrets/db_root_password.txt
+  wp_admin_password:
+    file: ../secrets/wp_admin_password.txt
+  wp_user_password:
+    file: ../secrets/wp_user_password.txt
 
 # 2. THE INTERCOM (Internal Network)
 networks:
