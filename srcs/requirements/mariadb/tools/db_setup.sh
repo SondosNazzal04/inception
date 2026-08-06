@@ -33,4 +33,5 @@ else
 fi
 
 # Start MariaDB in the foreground
-exec mysqld_safe --datadir=/var/lib/mysql
+# exec mysqld_safe --datadir=/var/lib/mysql
+exec "$@"

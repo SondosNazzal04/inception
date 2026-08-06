@@ -23,4 +23,4 @@ EXPOSE 3306
 ENTRYPOINT ["/usr/local/bin/db_setup.sh"]
 
 # Run MariaDB in the foreground
-# CMD ["mariadbd", "--user=mysql"]
+CMD ["mariadbd", "--user=mysql"]
