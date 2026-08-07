@@ -16,7 +16,7 @@ This infrastructure provides a fully functional, secure web stack consisting of 
 *   **Administration Panel:** Navigate to `https://snazzal.42.fr/wp-admin` to access the WordPress dashboard.
 
 ## Managing Credentials
-All sensitive credentials, API keys, and passwords are not stored in the public repository. They are located locally on the host machine in the `srcs/.env` file or within the local `secrets/` directory (which is ignored by Git)[cite: 1, 2]. 
+All sensitive credentials, API keys, and passwords are not stored in the public repository. They are located locally on the host machine in the `srcs/.env` file or within the local `secrets/` directory (which is ignored by Git). 
 
 ## Checking Service Status
 To verify that the services are running correctly, execute the following command from the `srcs/` directory:
