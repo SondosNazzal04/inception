@@ -22,5 +22,4 @@ EXPOSE 3306
 # Run the setup script on startup
 ENTRYPOINT ["/usr/local/bin/db_setup.sh"]
 
-# Run MariaDB in the foreground
 CMD ["mariadbd", "--user=mysql"]
