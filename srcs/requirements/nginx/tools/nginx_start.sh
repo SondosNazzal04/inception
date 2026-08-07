@@ -16,5 +16,5 @@ if [ ! -f /etc/nginx/ssl/inception.crt ]; then
     echo "SSL certificate generated successfully!"
 fi
 
-# Execute the primary command passed to the container (which will be our NGINX daemon command later)
+# Execute the primary command passed to the container (which will be our NGINX daemon command)
 exec "$@"

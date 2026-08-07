@@ -1,17 +1,6 @@
 [mysqld]
 # Basic settings
 user                    = mysql
-basedir                 = /usr
-datadir                 = /var/lib/mysql
-tmpdir                  = /tmp
-lc-messages-dir         = /usr/share/mysql
-socket                  = /var/run/mysqld/mysqld.sock
-pid-file                = /var/run/mysqld/mysqld.pid
-
-# Security and Networking
 # Bind to 0.0.0.0 to allow connections from other containers in the network
 bind-address            = 0.0.0.0
 port                    = 3306
-
-# Logging
-log_error = /var/log/mysql/error.log
