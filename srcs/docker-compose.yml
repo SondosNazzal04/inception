@@ -23,7 +23,7 @@ services:
     build: ./requirements/wordpress
     image: wordpress
     container_name: wordpress
-    restart: always
+    restart: on-failure
     env_file: .env
     depends_on:
       - mariadb
@@ -41,7 +41,7 @@ services:
     build: ./requirements/nginx
     image: nginx
     container_name: nginx
-    restart: always
+    restart: on-failure
     depends_on:
       - wordpress
     ports:
