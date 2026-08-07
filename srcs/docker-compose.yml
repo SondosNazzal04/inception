@@ -6,6 +6,7 @@ services:
   # The Vault
   mariadb:
     build: ./requirements/mariadb
+    image: mariadb
     container_name: mariadb
     restart: on-failure
     env_file: .env
@@ -20,6 +21,7 @@ services:
   # The Brains / Middle Manager
   wordpress:
     build: ./requirements/wordpress
+    image: wordpress
     container_name: wordpress
     restart: always
     env_file: .env
@@ -37,6 +39,7 @@ services:
   # The Receptionist
   nginx:
     build: ./requirements/nginx
+    image: nginx
     container_name: nginx
     restart: always
     depends_on:

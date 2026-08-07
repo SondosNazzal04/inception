@@ -36,7 +36,7 @@ ps:
 # Removes containers, networks, and images built by this project.
 # Leaves host data intact so you don't lose your DB/site on a normal reset.
 clean: down
-	docker image rm -f srcs-mariadb srcs-nginx srcs-wordpress 2>/dev/null || true
+	docker image rm -f mariadb nginx wordpress 2>/dev/null || true
 
 # Full reset: also wipes the actual persisted data on the host.
 # Use this to simulate a from-scratch evaluation run.
