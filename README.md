@@ -1,4 +1,4 @@
-*This project has been created as part of the 42 curriculum by snazzal
+*This project has been created as part of the 42 curriculum by snazzal*
 
 ## Description
 This project aims to broaden system administration knowledge by virtualizing several Docker images within a personal virtual machine. It involves setting up a small infrastructure composed of an NGINX web server, a WordPress site with PHP-FPM, and a MariaDB database, all orchestrated via Docker Compose.
