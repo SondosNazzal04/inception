@@ -1,4 +1,3 @@
-NAME        = inception
 LOGIN       = snazzal
 COMPOSE     = docker compose -f srcs/docker-compose.yml
 DATA_DIR    = /home/$(LOGIN)/data

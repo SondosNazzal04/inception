@@ -13,9 +13,20 @@ WP_USER_PASSWORD=$(cat /run/secrets/wp_user_password)
 PORT="${DB_PORT:-3306}"
 WP_PORT="${WP_PORT:-9000}"
 
+# 1. Automatically find the www.conf file, regardless of OS or PHP version
+WWW_CONF=$(find /etc -name "www.conf" 2>/dev/null | head -n 1)
+
+# 2. Update the listen port dynamically (handles varying spaces)
+if [ -n "$WWW_CONF" ]; then
+    sed -i "s|^listen[[:space:]]*=.*|listen = 0.0.0.0:${WP_PORT}|g" "$WWW_CONF"
+    echo "PHP-FPM configured to listen on port ${WP_PORT}"
+else
+    echo "Error: www.conf not found!"
+fi
+
 # Dynamically update PHP-FPM listen port in www.conf
-sed -i "s/listen = .*/listen = 0.0.0.0:${WP_PORT}/" /etc/php/*/fpm/pool.d/www.conf 2>/dev/null \
-    || sed -i "s/listen = .*/listen = 0.0.0.0:${WP_PORT}/" /etc/php-fpm.d/www.conf 2>/dev/null
+# sed -i "s/listen = .*/listen = 0.0.0.0:${WP_PORT}/" /etc/php/*/fpm/pool.d/www.conf 2>/dev/null \
+#     || sed -i "s/listen = .*/listen = 0.0.0.0:${WP_PORT}/" /etc/php-fpm.d/www.conf 2>/dev/null
 
 # 1. WAIT FOR MARIADB TO BE READY
 echo "Waiting for MariaDB to start..."
