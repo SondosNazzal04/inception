@@ -10,10 +10,16 @@ cd /var/www/wordpress
 DB_PASSWORD=$(cat /run/secrets/db_password)
 WP_ADMIN_PASSWORD=$(cat /run/secrets/wp_admin_password)
 WP_USER_PASSWORD=$(cat /run/secrets/wp_user_password)
+PORT="${DB_PORT:-3306}"
+WP_PORT="${WP_PORT:-9000}"
+
+# Dynamically update PHP-FPM listen port in www.conf
+sed -i "s/listen = .*/listen = 0.0.0.0:${WP_PORT}/" /etc/php/*/fpm/pool.d/www.conf 2>/dev/null \
+    || sed -i "s/listen = .*/listen = 0.0.0.0:${WP_PORT}/" /etc/php-fpm.d/www.conf 2>/dev/null
 
 # 1. WAIT FOR MARIADB TO BE READY
 echo "Waiting for MariaDB to start..."
-until mariadb-admin ping -h"mariadb" -u"${DB_USER}" -p"${DB_PASSWORD}" --silent; do
+until mariadb-admin ping -h"mariadb" -P"${PORT}" -u"${DB_USER}" -p"${DB_PASSWORD}" --silent; do
     echo "MariaDB is unavailable - sleeping"
     sleep 2
 done
@@ -29,7 +35,7 @@ if [ ! -f wp-config.php ]; then
         --dbname=${DB_NAME} \
         --dbuser=${DB_USER} \
         --dbpass=${DB_PASSWORD} \
-        --dbhost=mariadb:3306 \
+        --dbhost=mariadb:${PORT} \
         --allow-root
 
     echo "Installing WordPress core..."

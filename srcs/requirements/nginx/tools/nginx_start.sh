@@ -1,5 +1,11 @@
 #!/bin/bash
 
+WP_PORT="${WP_PORT:-9000}"
+
+# Dynamically update fastcgi_pass port in NGINX config
+sed -i "s/wordpress:[0-9]*/wordpress:${WP_PORT}/g" /etc/nginx/nginx.conf 2>/dev/null \
+    || sed -i "s/wordpress:[0-9]*/wordpress:${WP_PORT}/g" /etc/nginx/conf.d/default.conf 2>/dev/null
+
 # Create a directory to store the certificates if it doesn't exist
 mkdir -p /etc/nginx/ssl
 
